@@ -62,8 +62,8 @@ function Home({ styles }) {
     const systemPeso = (systemLength * systemWidth * systemHeight) / weightDenominator;
 
     
-    const usedWeightUser = userPeso > userWeight ? userPeso : userWeight;
-    const usedWeightSystem = systemPeso > systemWeight ? systemPeso : systemWeight;
+    const usedWeightUser = userPeso > processUserWeight(userWeight) ? userPeso : processUserWeight(userWeight);
+    const usedWeightSystem = systemPeso > processSystemWeight(systemWeight) ? systemPeso : processSystemWeight(systemWeight);
     
     const userTarifa = findTarifa(usedWeightUser, site);
     const systemTarifa = findTarifa(usedWeightSystem, site);
@@ -117,7 +117,7 @@ function Home({ styles }) {
           <p>Largo (cm)</p>
           <p>Ancho (cm)</p>
           <p>Alto (cm)</p>
-          <p>Peso (gr)</p>
+          <p>Peso (Kg)</p>
         </article>
         <article className={styles.userDimention}>
           <p>Usuario</p>
