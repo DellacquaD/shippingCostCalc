@@ -105,20 +105,22 @@ function Home({ styles }) {
   //   const userCostoEnvio = tarifa.user ? tarifa.user.clave : "-";
   //   const systemCostoEnvio = tarifa.system ? tarifa.system.clave : "-";
 
-  const getColorDiscount = (site, color) => {
+  const getColorDiscount = (site, color, valorCompra) => {
     const descuentos = jsonShippingCost[site]?.Descuentos;
-    
+  
     if (descuentos) {
-      for (const key in descuentos) {
-        if (descuentos[key].Color === color) {
-          return parseFloat(descuentos[key]['Porcentaje de Descuento']);
+      const colorDescuentos = descuentos[color];
+      if (colorDescuentos) {
+        if (valorCompra < 299) {
+          return parseFloat(colorDescuentos["Menor a $299"]);
+        } else {
+          return parseFloat(colorDescuentos["Mayor a $299"]);
         }
       }
     }
-    
+  
     return 0;
   };
-
   const calculateShippingCostWithDiscount = (costoEnvio, site, colorRepu) => {
     const descuento = getColorDiscount(site, colorRepu);
     const descuentoFactor = 1 - descuento / 100;

@@ -1,21 +1,18 @@
 {
     "MLM" : {
-        "Descuentos": [
-            {
-              "Color": "verde",
+          "Descuentos": {
+            "verde" : {
               "Menor a $299": 30,
               "Mayor a $299": 50
             },
-            {
-              "Color": "amarillo",
+            "amarillo" : {
               "Menor a $299": 20,
               "Mayor a $299": 40
             },
-            {
-              "Color": "rojo",
-              "no aplica": "No aplica descuento"
+            "rojo" : {
+                "no aplica": 0
             }
-          ],
+          }, 
           "Tarifas" : {
             "Hasta 0.5 Kg": "$ 125",
             "0.5 a 1 Kg": "$ 139",
@@ -58,7 +55,7 @@
             "Menor a $90.000 sin full": 40
           },
           "rojo" : {
-              "no aplica": "No aplica descuento"
+              "no aplica": 0
           }
         }, 
         "Tarifas" : {
@@ -85,7 +82,7 @@
                 "Mayor a 10000": 40
             },
             "rojo" : {
-                "no aplica": "No aplica descuento"
+                "no aplica": 0
             }
           },
         "Tarifas": {
@@ -110,7 +107,7 @@
                 "Mayor a 19990": 40
             },
             "rojo" : {
-                "no aplica": "No aplica descuento"
+                "no aplica": 0
             }
           },
         "Tarifas": {

@@ -2,8 +2,7 @@
     display: flex;
     flex-direction: column;
     background-color: white;
-    height: 600px;
-    padding: 15px;
+    padding: 5px 10px;
     gap: 10px;
     box-shadow: -2px 8px 17px -4px rgb(134, 133, 133);
     -webkit-box-shadow: -2px 8px 17px -4px rgb(134, 133, 133);
@@ -22,6 +21,7 @@ input {
 .sites {
   display: flex;
   justify-content: space-around;
+  padding: 5px;
 }
 
 .sites > button {
@@ -38,6 +38,8 @@ h2 {
   font-size: 1.5rem;
   font-weight: 700;
   text-align: center;
+  margin: 0;
+  padding: 10px;
 }
 
 article {
@@ -71,7 +73,7 @@ th {
 /* Estilos para las celdas de datos */
 td {
   text-align: center;
-  padding: 10px 5px;
+  padding: 5px;
   border: 1px solid #555;
 }
 
