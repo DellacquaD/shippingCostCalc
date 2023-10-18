@@ -1,22 +1,43 @@
 .home {
-    display: grid;
-    grid-template-rows: repeat(4, 1fr);
-    align-items: center;
-    justify-content: center;
-    height: 580px;
-    width: 276px;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    height: 600px;
+    padding: 15px;
+    gap: 10px;
+    box-shadow: -2px 8px 17px -4px rgb(134, 133, 133);
+    -webkit-box-shadow: -2px 8px 17px -4px rgb(134, 133, 133);
+    -moz-box-shadow: -2px 8px 17px -4px rgb(134, 133, 133);
+}
+
+input {
+    height: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 1rem;
+    text-align: center;
 }
 
 .sites {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-gap: 1rem;
+  display: flex;
+  justify-content: space-around;
 }
 
-.calculator {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(2, 1fr);
+.sites > button {
+  width: 60px;
+  height: 60px;
+  background-size:cover;
+  border: none;
+  background-color: #fff; 
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: center;
 }
 
 article {
@@ -26,4 +47,62 @@ article {
 
 .userDimention {
   grid-column: 2;
+}
+
+
+/* Estilos para el contenedor principal */
+/* Estilos para la tabla */
+.calculator {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  border: 2px solid #333;
+}
+
+/* Estilos para las celdas de encabezado */
+th {
+  background-color: #333;
+  color: white;
+  text-align: center;
+  padding: 10px;
+  border: 1px solid #555;
+}
+
+/* Estilos para las celdas de datos */
+td {
+  text-align: center;
+  padding: 10px 5px;
+  border: 1px solid #555;
+}
+
+/* Estilos para filas alternas (para mejorar la legibilidad) */
+
+/* Estilos para filas al pasar el mouse (resaltado) */
+
+/* Estilo para la primera columna (en este caso, la columna de etiquetas) */
+
+/* Estilos para las celdas vacías en la primera columna */
+td:first-child:empty {
+  font-weight: normal;
+  background-color: transparent;
+}
+
+.yellowRepu {
+  background-color: #FFD700 ;
+  color: black;
+  font-weight: 600;
+
+}
+
+.greenRepu {
+  background-color: #00FF00 ;
+  color: black;
+  font-weight: 600;
+}
+
+.redsRepu {
+  background-color: #FF6666 ;
+  font-weight: 600;
+  color: black;
+
 }

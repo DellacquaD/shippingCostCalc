@@ -101,110 +101,187 @@ function Home({ styles }) {
     return !isNaN(weight) ? parseFloat(weight.toFixed(2)) : 0; // Si no es un número válido, usa 0
   };
 
+  // // Obtén el costo de envío basado en tarifas
+  //   const userCostoEnvio = tarifa.user ? tarifa.user.clave : "-";
+  //   const systemCostoEnvio = tarifa.system ? tarifa.system.clave : "-";
+
+  const getColorDiscount = (site, color) => {
+    const descuentos = jsonShippingCost[site]?.Descuentos;
+    
+    if (descuentos) {
+      for (const key in descuentos) {
+        if (descuentos[key].Color === color) {
+          return parseFloat(descuentos[key]['Porcentaje de Descuento']);
+        }
+      }
+    }
+    
+    return 0;
+  };
+
+  const calculateShippingCostWithDiscount = (costoEnvio, site, colorRepu) => {
+    const descuento = getColorDiscount(site, colorRepu);
+    const descuentoFactor = 1 - descuento / 100;
+  
+    return costoEnvio * descuentoFactor;
+  };
+  
+
   return (
     <div className={styles.home}>
       <h2>Costos de envío</h2>
       <div className={styles.sites}>
-        <button onClick={() => { setWeightDenominator(5000); setSite("MLM"); }}>MLM</button>
-        <button onClick={() => { setWeightDenominator(4000); setSite("MLA"); }}>MLA</button>
-        <button onClick={() => { setWeightDenominator(4000); setSite("MLC"); }}>MLC</button>
-        <button onClick={() => { setWeightDenominator(4505); setSite("MCO"); }}>MCO</button>
+        <button onClick={() => { setWeightDenominator(5000); setSite("MLM"); }} style={{ backgroundImage: "url('/flags/mexico_ico.png')" , filter: site === "MLM" ? "brightness(1)" : "opacity(0.2)"}}></button>
+        <button onClick={() => { setWeightDenominator(4000); setSite("MLA"); }} style={{ backgroundImage: "url('/flags/argentina_ico.png')", filter: site === "MLA" ? "brightness(1)" : "opacity(0.2)" }}></button>
+        <button onClick={() => { setWeightDenominator(4000); setSite("MLC"); }} style={{ backgroundImage: "url('/flags/chile_ico.png')", filter: site === "MLC" ? "brightness(1)" : "opacity(0.2)" }}></button>
+        <button onClick={() => { setWeightDenominator(4505); setSite("MCO"); }} style={{ backgroundImage: "url('/flags/colombia_ico.png')", filter: site === "MCO" ? "brightness(1)" : "opacity(0.2)" }}></button>
       </div>
-      <section className={styles.calculator}>
-
-      <article className={styles.whDimention}>
-          <p></p>
-          <p>Largo (cm)</p>
-          <p>Ancho (cm)</p>
-          <p>Alto (cm)</p>
-          <p>Peso (Kg)</p>
-        </article>
-        <article className={styles.userDimention}>
-          <p>Usuario</p>
-          <input
-            type="number"
-            value={userLength}
-            onChange={(e) => setUserLength(Math.ceil(e.target.value))}
-            onClick={() => setUserLength("")}
-            step="1"
-          />
-          <input
-            type="number"
-            value={userWidth}
-            onChange={(e) => setUserWidth(Math.ceil(e.target.value))}
-            onClick={() => setUserWidth("")}
-            step="1"
-          />
-
-          <input
-            type="number"
-            value={userHeight}
-            onChange={(e) => setUserHeight(Math.ceil(e.target.value))}
-            onClick={() => setUserHeight("")}
-            step="1"
-
-          />
-
-          <input
-            type="text"
-            value={userWeight}
-            onChange={(e) => {setUserWeight(e.target.value) ; processUserWeight(e.target.value) }}
-            onClick={() => setUserWeight("")}
-            step="0.01"
-          />
-        </article>
-        <article className={styles.whDimention}>
-          <p>Sistema</p>
-          <input
-            type="number"
-            value={systemLength}
-            onChange={(e) => setSystemLength(Math.ceil(e.target.value))}
-            onClick={() => setSystemLength("")}
-            step="1"
-          />
-          <input
-            type="number"
-            value={systemWidth}
-            onChange={(e) => setSystemWidth(Math.ceil(e.target.value))}
-            onClick={() => setSystemWidth("")}
-            step="1"
-          />
-          <input
-            type="number"
-            value={systemHeight}
-            onChange={(e) => setSystemHeight(Math.ceil(e.target.value))}
-            onClick={() => setSystemHeight("")}
-            step="1"
-          />
-          <input
-            type="text"
-            value={systemWeight}
-            onChange={(e) => {setSystemWeight(e.target.value) ; processSystemWeight(e.target.value) }}
-            onClick={() => setSystemWeight("")}
-            step="0.01"
-          />
-        </article>
-        <article className={styles.dimentionDetails}>
-          <p>Peso volumétrico</p>
-          <p>Peso utilizado</p>
-          <p>Categoria: </p>
-          <p>Costo de envío</p>
-        </article>
-        <article className={styles.whDimention}>
-          <p>{(userLength * userWidth * userHeight) / weightDenominator}</p>
-          <p>{(userLength * userWidth * userHeight) / weightDenominator > userWeight ? "Peso volumétrico" : "Peso físico"}</p>
-          <p>{tarifa.user ? tarifa.user.clave : "-"}</p>
-          <p>{tarifa.user ? tarifa.user.valor : "-"}</p>
-          <p></p>
-        </article>
-        <article className={styles.whDimention}>
-          <p>{(systemLength * systemWidth * systemHeight) / weightDenominator}</p>
-          <p>{(systemLength * systemWidth * systemHeight) / weightDenominator > systemWeight ? "Peso volumétrico" : "Peso físico"}</p>
-          <p>{tarifa.system ? tarifa.system.clave : "-"}</p>
-          <p>{tarifa.system ? tarifa.system.valor : "-"}</p>
-          <p></p>
-        </article>
-      </section>
+      <table className={styles.calculator}>
+        <thead>
+          <tr>
+            <th></th>
+            <th>Usuario</th>
+            <th>Sistema</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Largo (cm)</td>
+            <td>
+              <input
+                type="number"
+                placeholder="0"
+                value={userLength}
+                onChange={(e) => setUserLength(Math.ceil(e.target.value))}
+                onClick={() => setUserLength("")}
+                step="1"
+              />
+            </td>
+            <td>
+              <input
+                type="number"
+                placeholder="0"
+                value={systemLength}
+                onChange={(e) => setSystemLength(Math.ceil(e.target.value))}
+                onClick={() => setSystemLength("")}
+                step="1"
+              />
+            </td>
+          </tr>
+          <tr>
+            <td>Ancho (cm)</td>
+            <td>
+              <input
+                type="number"
+                placeholder="0"
+                value={userWidth}
+                onChange={(e) => setUserWidth(Math.ceil(e.target.value))}
+                onClick={() => setUserWidth("")}
+                step="1"
+              />
+            </td>
+            <td>
+              <input
+                type="number"
+                placeholder="0"
+                value={systemWidth}
+                onChange={(e) => setSystemWidth(Math.ceil(e.target.value))}
+                onClick={() => setSystemWidth("")}
+                step="1"
+              />
+            </td>
+          </tr>
+          <tr>
+            <td>Alto (cm)</td>
+            <td>
+              <input
+                type="number"
+                placeholder="0"
+                value={userHeight}
+                onChange={(e) => setUserHeight(Math.ceil(e.target.value))}
+                onClick={() => setUserHeight("")}
+                step="1"
+              />
+            </td>
+            <td>
+              <input
+                type="number"
+                placeholder="0"
+                value={systemHeight}
+                onChange={(e) => setSystemHeight(Math.ceil(e.target.value))}
+                onClick={() => setSystemHeight("")}
+                step="1"
+              />
+            </td>
+          </tr>
+          <tr>
+            <td>Peso (Kg)</td>
+            <td>
+              <input
+                type="text"
+                placeholder="0"
+                value={userWeight}
+                onChange={(e) => {setUserWeight(e.target.value) ; processUserWeight(e.target.value) }}
+                onClick={() => setUserWeight("")}
+                step="0.01"
+              />
+            </td>
+            <td>
+              <input
+                type="text"
+                placeholder="0"
+                value={systemWeight}
+                onChange={(e) => {setSystemWeight(e.target.value) ; processSystemWeight(e.target.value) }}
+                onClick={() => setSystemWeight("")}
+                step="0.01"
+              />
+            </td>
+          </tr>
+          <tr>
+            <td>Peso volumétrico</td>
+            <td>{(userLength * userWidth * userHeight) / weightDenominator}</td>
+            <td>{(systemLength * systemWidth * systemHeight) / weightDenominator}</td>
+          </tr>
+          <tr>
+            <td>Peso utilizado</td>
+            <td>{(userLength * userWidth * userHeight) / weightDenominator > userWeight ? "Peso volumétrico" : "Peso físico"}</td>
+            <td>{(systemLength * systemWidth * systemHeight) / weightDenominator > systemWeight ? "Peso volumétrico" : "Peso físico"}</td>
+          </tr>
+          <tr>
+            <td>Categoria:</td>
+            <td>{tarifa.user ? tarifa.user.clave : "-"}</td>
+            <td>{tarifa.system ? tarifa.system.clave : "-"}</td>
+          </tr>
+          <tr>
+            <td>Costo de envío</td>
+            <td>
+              <tr>
+                <td className={styles.greenRepu}> Verde ({getColorDiscount(site, "verde")})</td>
+                <td className={styles.yellowRepu}> Amarillo ({getColorDiscount(site, "amarillo")})</td>
+                <td className={styles.redsRepu}> Rojo ({getColorDiscount(site, "rojo")})</td>
+              </tr>
+              <tr>
+                <td>{calculateShippingCostWithDiscount(tarifa.user?.valor, site, "verde")}</td>
+                <td>{calculateShippingCostWithDiscount(tarifa.user?.valor, site, "amarillo")}</td>
+                <td>{calculateShippingCostWithDiscount(tarifa.user?.valor, site, "rojo")}</td>
+              </tr>
+            </td>
+            <td>
+            <tr>
+                <td className={styles.greenRepu}> Verde ({getColorDiscount(site, "verde")}) </td>
+                <td className={styles.yellowRepu}> Amarillo ({getColorDiscount(site, "amarillo")})</td>
+                <td className={styles.redsRepu}> Rojo ({getColorDiscount(site, "rojo")})</td>
+              </tr>
+              <tr>
+                <td >{calculateShippingCostWithDiscount(tarifa.system?.valor, site, "verde")}</td>
+                <td >{calculateShippingCostWithDiscount(tarifa.system?.valor, site, "amarillo")}</td>
+                <td >{calculateShippingCostWithDiscount(tarifa.system?.valor, site, "rojo")}</td>
+              </tr>
+            </td>
+            {/* <td>{tarifa.system ? tarifa.system.valor : "-"}</td> */}
+          </tr>
+        </tbody>
+      </table>
     </div>
   );
 }
