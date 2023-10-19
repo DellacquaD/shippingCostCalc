@@ -7,6 +7,7 @@
     box-shadow: -2px 8px 17px -4px rgb(134, 133, 133);
     -webkit-box-shadow: -2px 8px 17px -4px rgb(134, 133, 133);
     -moz-box-shadow: -2px 8px 17px -4px rgb(134, 133, 133);
+    font-weight: 700;
 }
 
 input {
@@ -16,6 +17,29 @@ input {
     padding: 5px;
     font-size: 1rem;
     text-align: center;
+}
+
+.class0 {
+    background-color: #00FF00;
+    color: black;
+    font-weight: 600;
+}
+
+.class1 {
+    background-color: #FFD700;
+    color: black;
+    font-weight: 600;
+}
+
+.class2 {
+    background-color: #FF6666;
+    font-weight: 600;
+    color: black;
+}
+
+input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 .sites {
@@ -51,6 +75,10 @@ article {
   grid-column: 2;
 }
 
+.tdBorderNone {
+  border: none;
+}
+
 
 /* Estilos para el contenedor principal */
 /* Estilos para la tabla */
@@ -59,6 +87,15 @@ article {
   border-collapse: collapse;
   margin-bottom: 20px;
   border: 2px solid #333;
+}
+
+.calculator::-webkit-scrollbar {
+  width: 5px;
+}
+
+.calculator::-webkit-scrollbar-thumb {
+  background-color: rgba(240, 87, 45, 0.7);
+  border-radius: 20px;
 }
 
 /* Estilos para las celdas de encabezado */

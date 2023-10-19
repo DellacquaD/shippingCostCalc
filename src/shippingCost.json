@@ -1,16 +1,16 @@
 {
     "MLM" : {
           "Descuentos": {
-            "verde" : {
+            "MercadoLíderes, Tiendas Oficiales y reputaciones verdes" : {
               "Menor a $299": 30,
               "Mayor a $299": 50
             },
-            "amarillo" : {
+            "Reputación amarilla o sin reputación" : {
               "Menor a $299": 20,
               "Mayor a $299": 40
             },
-            "rojo" : {
-                "no aplica": 0
+            "Reputación naranja o roja" : {
+                "Sin descuento": 0
             }
           }, 
           "Tarifas" : {
@@ -46,16 +46,16 @@
     },
     "MCO" : {
         "Descuentos": {
-          "verde" : {
-            "Menor a $90.000 con full": 60,
-            "Menor a $90.000 sin full": 50
+          "MercadoLíderes, Tiendas Oficiales y reputaciones verdes" : {
+            "Mayor a $90.000 con full": 60,
+            "Mayor a $90.000 sin full": 50
           },
-          "amarillo" : {
-            "Menor a $90.000 con full": 50,
-            "Menor a $90.000 sin full": 40
+          "Reputación amarilla o vendedores sin reputación" : {
+            "Mayor a $90.000 con full": 50,
+            "Mayor a $90.000 sin full": 40
           },
-          "rojo" : {
-              "no aplica": 0
+          "Reputación naranja o roja" : {
+              "Sin descuento": 0
           }
         }, 
         "Tarifas" : {
@@ -75,51 +75,51 @@
   },
     "MLA" : {
         "Descuentos": {
-            "verde" : {
-                "Mayor a 10000": 50
-            },
-            "amarillo" : {
-                "Mayor a 10000": 40
-            },
-            "rojo" : {
-                "no aplica": 0
+          "Mercado Lideres, Tiendas oficiales y Reputaciones verdes" : {
+            "Mayor a 10000": 50
+          },
+          "Reputación amarilla o vendedores sin reputación" : {
+              "Mayor a 10000": 40
+          },
+            "Reputación naranja o roja" : {
+                "Sin descuento": 0
             }
           },
         "Tarifas": {
-            "Hasta 0,3 Kg": "$ 2.849,99",
-            "0,3 a 0,5 Kg": "$ 2.904,99",
-            "0,5 a 1 Kg": "$ 3.509,99",
-            "1 a 2 Kg": "$ 3.729,99",
-            "2 a 5 Kg": "$ 4.594,99",
-            "5 a 10 Kg": "$ 5.434,99",
-            "10 a 15 Kg": "$ 6.289,99",
-            "15 a 20 Kg": "$ 7.374,99",
-            "20 a 25 Kg": "$ 8.039,99",
-            "Más de 25 Kg": "$ 11.389,99"
+            "Hasta 0,3 Kg": "$ 2,849.99",
+            "0,3 a 0,5 Kg": "$ 2,904.99",
+            "0,5 a 1 Kg": "$ 3,509.99",
+            "1 a 2 Kg": "$ 3,729.99",
+            "2 a 5 Kg": "$ 4,594.99",
+            "5 a 10 Kg": "$ 5,434.99",
+            "10 a 15 Kg": "$ 6,289.99",
+            "15 a 20 Kg": "$ 7,374.99",
+            "20 a 25 Kg": "$ 8,039.99",
+            "Más de 25 Kg": "$ 11,389.99"
           }
     },
     "MLC" : {
         "Descuentos": {
-            "verde" : {
+            "MercadoLíderes, Tiendas Oficiales y reputaciones verdes" : {
                 "Mayor a 19990": 50
             },
-            "amarillo" : {
+            "Reputación amarilla o vendedores sin reputación" : {
                 "Mayor a 19990": 40
             },
-            "rojo" : {
-                "no aplica": 0
+            "Reputación naranja o roja" : {
+                "Sin descuento": 0
             }
           },
         "Tarifas": {
-            "Hasta 0,5 Kg": "$ 2.904,99",
-            "0,5 a 1 Kg": "$ 3.509,99",
-            "1 a 2 Kg": "$ 3.729,99",
-            "2 a 5 Kg": "$ 4.594,99",
-            "5 a 10 Kg": "$ 5.434,99",
-            "10 a 15 Kg": "$ 6.289,99",
-            "15 a 20 Kg": "$ 7.374,99",
-            "20 a 25 Kg": "$ 8.039,99",
-            "Más de 25 Kg": "$ 11.389,99"
+            "Hasta 0,5 Kg": "$ 2,904.99",
+            "0,5 a 1 Kg": "$ 3,509.99",
+            "1 a 2 Kg": "$ 3,729.99",
+            "2 a 5 Kg": "$ 4,594.99",
+            "5 a 10 Kg": "$ 5,434.99",
+            "10 a 15 Kg": "$ 6,289.99",
+            "15 a 20 Kg": "$ 7,374.99",
+            "20 a 25 Kg": "$ 8,039.99",
+            "Más de 25 Kg": "$ 11,389.99"
           }
     }
 }

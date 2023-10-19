@@ -1,20 +1,18 @@
 import React, { useState, useEffect } from "react";
 import jsonShippingCost from "./shippingCost.json";
 
-
-
 function Home({ styles }) {
-  const [userLength, setUserLength] = useState("")
-  const [userWidth, setUserWidth] = useState("")
-  const [userHeight, setUserHeight] = useState("")
+  const [userLength, setUserLength] = useState(0)
+  const [userWidth, setUserWidth] = useState(0)
+  const [userHeight, setUserHeight] = useState(0)
   const [userWeight, setUserWeight] = useState("")
-  const [systemLength, setSystemLength] = useState("")
-  const [systemWidth, setSystemWidth] = useState("")
-  const [systemHeight, setSystemHeight] = useState("")
+  const [systemLength, setSystemLength] = useState(0)
+  const [systemWidth, setSystemWidth] = useState(0)
+  const [systemHeight, setSystemHeight] = useState(0)
   const [systemWeight, setSystemWeight] = useState("")
   const [weightDenominator, setWeightDenominator] = useState(4000)
   const [site, setSite] = useState("MLM")
-  const [tarifa, setTarifa] = useState({});
+  const [tarifa, setTarifa] = useState({})
 
   useEffect(() => {
     const findTarifa = (peso, site) => {
@@ -69,6 +67,7 @@ function Home({ styles }) {
     const systemTarifa = findTarifa(usedWeightSystem, site);
     
     // Actualizar las tarifas en el estado
+    
     setTarifa({
       user: userTarifa,
       system: systemTarifa,
@@ -83,6 +82,7 @@ function Home({ styles }) {
     systemHeight,
     systemWeight,
     weightDenominator,
+    site,
   ]);
   
   const processUserWeight = (value) => {
@@ -105,28 +105,33 @@ function Home({ styles }) {
   //   const userCostoEnvio = tarifa.user ? tarifa.user.clave : "-";
   //   const systemCostoEnvio = tarifa.system ? tarifa.system.clave : "-";
 
-  const getColorDiscount = (site, color, valorCompra) => {
+  const getColorDiscount = (site, tipoDescuento) => {
     const descuentos = jsonShippingCost[site]?.Descuentos;
-  
-    if (descuentos) {
-      const colorDescuentos = descuentos[color];
-      if (colorDescuentos) {
-        if (valorCompra < 299) {
-          return parseFloat(colorDescuentos["Menor a $299"]);
-        } else {
-          return parseFloat(colorDescuentos["Mayor a $299"]);
-        }
-      }
+    
+    if (descuentos && descuentos[tipoDescuento]) {
+      return descuentos[tipoDescuento];
     }
-  
+    
     return 0;
   };
-  const calculateShippingCostWithDiscount = (costoEnvio, site, colorRepu) => {
-    const descuento = getColorDiscount(site, colorRepu);
-    const descuentoFactor = 1 - descuento / 100;
+
+  const getUniqueKeys = (site) => {
+    const descuentos = jsonShippingCost[site]?.Descuentos;
+    if (!descuentos) return [];
+    
+    const keys = Object.keys(descuentos);
+    const uniqueKeys = new Set();
   
-    return costoEnvio * descuentoFactor;
+    keys.forEach((tipoDescuento) => {
+      Object.keys(descuentos[tipoDescuento]).forEach((clave) => {
+        uniqueKeys.add(clave);
+      });
+    });
+  
+    return Array.from(uniqueKeys);
   };
+  
+  const uniqueKeys = getUniqueKeys(site);
   
 
   return (
@@ -150,22 +155,31 @@ function Home({ styles }) {
           <tr>
             <td>Largo (cm)</td>
             <td>
-              <input
-                type="number"
-                placeholder="0"
-                value={userLength}
-                onChange={(e) => setUserLength(Math.ceil(e.target.value))}
-                onClick={() => setUserLength("")}
-                step="1"
-              />
+            <input
+              type="number"
+              value={userLength}
+              onChange={(e) => setUserLength(e.target.value)}
+              onMouseDown={() => setUserLength("")}
+              onBlur={(e) => {
+                const value = parseFloat(e.target.value);
+                if (!isNaN(value)) {
+                  setUserLength(Math.ceil(value));
+                }
+              }}
+            />
             </td>
             <td>
               <input
                 type="number"
-                placeholder="0"
                 value={systemLength}
-                onChange={(e) => setSystemLength(Math.ceil(e.target.value))}
+                onChange={(e) => setSystemLength(e.target.value)}
                 onClick={() => setSystemLength("")}
+                onBlur={(e) => {
+                  const value = parseFloat(e.target.value);
+                  if (!isNaN(value)) {
+                    setSystemLength(Math.ceil(value));
+                  }
+                }}
                 step="1"
               />
             </td>
@@ -175,20 +189,30 @@ function Home({ styles }) {
             <td>
               <input
                 type="number"
-                placeholder="0"
                 value={userWidth}
-                onChange={(e) => setUserWidth(Math.ceil(e.target.value))}
+                onChange={(e) => setUserWidth(e.target.value)}
                 onClick={() => setUserWidth("")}
+                onBlur={(e) => {
+                  const value = parseFloat(e.target.value);
+                  if (!isNaN(value)) {
+                    setUserWidth(Math.ceil(value));
+                  }
+                }}
                 step="1"
               />
             </td>
             <td>
               <input
                 type="number"
-                placeholder="0"
                 value={systemWidth}
-                onChange={(e) => setSystemWidth(Math.ceil(e.target.value))}
+                onChange={(e) => setSystemWidth(e.target.value)}
                 onClick={() => setSystemWidth("")}
+                onBlur={(e) => {
+                  const value = parseFloat(e.target.value);
+                  if (!isNaN(value)) {
+                    setSystemWidth(Math.ceil(value));
+                  }
+                }}
                 step="1"
               />
             </td>
@@ -198,20 +222,30 @@ function Home({ styles }) {
             <td>
               <input
                 type="number"
-                placeholder="0"
                 value={userHeight}
-                onChange={(e) => setUserHeight(Math.ceil(e.target.value))}
+                onChange={(e) => setUserHeight(e.target.value)}
                 onClick={() => setUserHeight("")}
+                onBlur={(e) => {
+                  const value = parseFloat(e.target.value);
+                  if (!isNaN(value)) {
+                    setUserHeight(Math.ceil(value));
+                  }
+                }}
                 step="1"
               />
             </td>
             <td>
               <input
                 type="number"
-                placeholder="0"
                 value={systemHeight}
-                onChange={(e) => setSystemHeight(Math.ceil(e.target.value))}
+                onChange={(e) => setSystemHeight(e.target.value)}
                 onClick={() => setSystemHeight("")}
+                onBlur={(e) => {
+                  const value = parseFloat(e.target.value);
+                  if (!isNaN(value)) {
+                    setSystemHeight(Math.ceil(value));
+                  }
+                }}
                 step="1"
               />
             </td>
@@ -220,8 +254,8 @@ function Home({ styles }) {
             <td>Peso (Kg)</td>
             <td>
               <input
-                type="text"
-                placeholder="0"
+                type="number"
+                placeholder="0.0"
                 value={userWeight}
                 onChange={(e) => {setUserWeight(e.target.value) ; processUserWeight(e.target.value) }}
                 onClick={() => setUserWeight("")}
@@ -230,8 +264,8 @@ function Home({ styles }) {
             </td>
             <td>
               <input
-                type="text"
-                placeholder="0"
+                type="number"
+                placeholder="0.0"
                 value={systemWeight}
                 onChange={(e) => {setSystemWeight(e.target.value) ; processSystemWeight(e.target.value) }}
                 onClick={() => setSystemWeight("")}
@@ -255,33 +289,56 @@ function Home({ styles }) {
             <td>{tarifa.system ? tarifa.system.clave : "-"}</td>
           </tr>
           <tr>
-            <td>Costo de envío</td>
+          <td>Costo de envío</td>
             <td>
-              <tr>
-                <td className={styles.greenRepu}> Verde ({getColorDiscount(site, "verde")})</td>
-                <td className={styles.yellowRepu}> Amarillo ({getColorDiscount(site, "amarillo")})</td>
-                <td className={styles.redsRepu}> Rojo ({getColorDiscount(site, "rojo")})</td>
-              </tr>
-              <tr>
-                <td>{calculateShippingCostWithDiscount(tarifa.user?.valor, site, "verde")}</td>
-                <td>{calculateShippingCostWithDiscount(tarifa.user?.valor, site, "amarillo")}</td>
-                <td>{calculateShippingCostWithDiscount(tarifa.user?.valor, site, "rojo")}</td>
-              </tr>
+              <table>
+                <thead>
+                  <tr>
+                    <th></th>
+                    {uniqueKeys.map((clave) => (
+                      <th key={clave}>{clave}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                {Object.keys(jsonShippingCost[site]?.Descuentos || {}).map((tipoDescuento, index) => (
+                  <tr key={tipoDescuento}>
+                    <td className={styles[`class${index}`]}> {tipoDescuento}</td>
+                    {uniqueKeys.map((clave) => (
+                      <td className={styles[`class${index}`]} key={clave}>
+                        {tarifa.user ? "$" + (tarifa.user.valor * (1 - (jsonShippingCost[site]?.Descuentos[tipoDescuento][clave] ? jsonShippingCost[site]?.Descuentos[tipoDescuento][clave] / 100 : 0))).toFixed(2) : '0.00'}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+                </tbody>
+              </table>
             </td>
             <td>
-            <tr>
-                <td className={styles.greenRepu}> Verde ({getColorDiscount(site, "verde")}) </td>
-                <td className={styles.yellowRepu}> Amarillo ({getColorDiscount(site, "amarillo")})</td>
-                <td className={styles.redsRepu}> Rojo ({getColorDiscount(site, "rojo")})</td>
-              </tr>
-              <tr>
-                <td >{calculateShippingCostWithDiscount(tarifa.system?.valor, site, "verde")}</td>
-                <td >{calculateShippingCostWithDiscount(tarifa.system?.valor, site, "amarillo")}</td>
-                <td >{calculateShippingCostWithDiscount(tarifa.system?.valor, site, "rojo")}</td>
-              </tr>
+            <table>
+                <thead>
+                  <tr>
+                    <th></th>
+                    {uniqueKeys.map((clave) => (
+                      <th key={clave}>{clave}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {Object.keys(jsonShippingCost[site]?.Descuentos || {}).map((tipoDescuento, index) => (
+                    <tr className={styles[tipoDescuento]} key={tipoDescuento}>
+                      <td className={styles[`class${index}`]} >{tipoDescuento}</td>
+                      {uniqueKeys.map((clave) => (
+                        <td className={styles[`class${index}`]} key={clave}>
+                          {tarifa.system ? "$" + (tarifa.system.valor * (1 - (jsonShippingCost[site]?.Descuentos[tipoDescuento][clave] ? jsonShippingCost[site]?.Descuentos[tipoDescuento][clave] / 100 : 0))).toFixed(2) : '0.00'}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </td>
-            {/* <td>{tarifa.system ? tarifa.system.valor : "-"}</td> */}
-          </tr>
+          </tr>     
         </tbody>
       </table>
     </div>
