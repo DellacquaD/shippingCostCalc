@@ -13,6 +13,8 @@
                 "Sin descuento": 0
             }
           }, 
+          "Denominator" :  5000,
+          "imgUrl" : "/flags/mexico_ico.png",
           "Tarifas" : {
             "Hasta 0.5 Kg": "$ 125",
             "0.5 a 1 Kg": "$ 139",
@@ -58,6 +60,8 @@
               "Sin descuento": 0
           }
         }, 
+        "Denominator" :  4505,
+        "imgUrl" : "/flags/colombia_ico.png",
         "Tarifas" : {
           "Hasta 3 Kg": "$ 13,000",
           "3 a 5 kg": "$ 15,000",
@@ -85,6 +89,8 @@
                 "Sin descuento": 0
             }
           },
+        "Denominator" :  4000,
+        "imgUrl" : "/flags/argentina_ico.png",
         "Tarifas": {
             "Hasta 0,3 Kg": "$ 2,849.99",
             "0,3 a 0,5 Kg": "$ 2,904.99",
@@ -110,6 +116,8 @@
                 "Sin descuento": 0
             }
           },
+        "Denominator" :  4000,
+        "imgUrl" : "/flags/chile_ico.png",
         "Tarifas": {
             "Hasta 0,5 Kg": "$ 2,904.99",
             "0,5 a 1 Kg": "$ 3,509.99",
@@ -120,6 +128,45 @@
             "15 a 20 Kg": "$ 7,374.99",
             "20 a 25 Kg": "$ 8,039.99",
             "Más de 25 Kg": "$ 11,389.99"
+          }
+    },
+    "MLB" : {
+        "Descuentos": {
+            "Lojas oficiais, MercadoLíderes e com reputação verde" : {
+                "Maior que R$ 79": 50
+            },
+            "Reputação amarela ou sem reputação" : {
+                "Maior que R$ 79": 40
+            },
+            "Reputação laranja ou vermelha" : {
+                "Sem desconto": 0
+            }
+          },
+        "Denominator" :  6000,
+        "imgUrl" : "/flags/brasil_ico.png",
+        "Tarifas": {
+          "Até 0,3 Kg": "$ 37.90",
+          "0,3 a 0,5 Kg": "$ 38.90",
+          "0,5 a 1 kg": "$ 42.90",
+          "1 a 2 kg": "$ 44.90",
+          "2 a 3 kg": "$ 45.90",
+          "3 a 4 kg": "$ 46.90",
+          "4 a 5 kg": "$ 47.90",
+          "5 a 9 kg": "$ 81.90",
+          "9 a 13 kg": "$ 127.90",
+          "13 a 17 kg": "$ 142.90",
+          "17 a 23 kg": "$ 166.90",
+          "23 a 30 kg": "$ 191.90",
+          "30 a 40 Kg": "$ 212.90",
+          "40 a 50 kg": "$ 226.90",
+          "50 a 60 kg": "$ 242.90",
+          "60 a 70 kg": "$ 274.90",
+          "70 a 80 kg": "$ 304.90",
+          "80 a 90 kg": "$ 339.90",
+          "90 a 100 kg": "$ 387.90",
+          "100 a 125 kg": "$ 433.90",
+          "125 a 150 kg": "$ 460.90",
+          "Maior que 150 kg": "$ 484.90"
           }
     }
 }

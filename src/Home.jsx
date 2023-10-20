@@ -60,8 +60,8 @@ function Home({ styles }) {
     const systemPeso = (systemLength * systemWidth * systemHeight) / weightDenominator;
 
     
-    const usedWeightUser = userPeso > processUserWeight(userWeight) ? userPeso : processUserWeight(userWeight);
-    const usedWeightSystem = systemPeso > processSystemWeight(systemWeight) ? systemPeso : processSystemWeight(systemWeight);
+    const usedWeightUser = userWeight > 2 ? userPeso > processUserWeight(userWeight) ? userPeso : processUserWeight(userWeight) : userWeight;
+    const usedWeightSystem = systemWeight > 2 ? systemPeso > processSystemWeight(systemWeight) ? systemPeso : processSystemWeight(systemWeight): systemWeight;
     
     const userTarifa = findTarifa(usedWeightUser, site);
     const systemTarifa = findTarifa(usedWeightSystem, site);
@@ -136,13 +136,22 @@ function Home({ styles }) {
 
   return (
     <div className={styles.home}>
-      <h2>Costos de envío</h2>
-      <div className={styles.sites}>
-        <button onClick={() => { setWeightDenominator(5000); setSite("MLM"); }} style={{ backgroundImage: "url('/flags/mexico_ico.png')" , filter: site === "MLM" ? "brightness(1)" : "opacity(0.2)"}}></button>
-        <button onClick={() => { setWeightDenominator(4000); setSite("MLA"); }} style={{ backgroundImage: "url('/flags/argentina_ico.png')", filter: site === "MLA" ? "brightness(1)" : "opacity(0.2)" }}></button>
-        <button onClick={() => { setWeightDenominator(4000); setSite("MLC"); }} style={{ backgroundImage: "url('/flags/chile_ico.png')", filter: site === "MLC" ? "brightness(1)" : "opacity(0.2)" }}></button>
-        <button onClick={() => { setWeightDenominator(4505); setSite("MCO"); }} style={{ backgroundImage: "url('/flags/colombia_ico.png')", filter: site === "MCO" ? "brightness(1)" : "opacity(0.2)" }}></button>
-      </div>
+      <h2>{site === "MLB" ? "Custos de envio" : "Costos de envío"}</h2>
+       <div className={styles.sites}>
+          {Object.keys(jsonShippingCost).map(siteKey => (
+            <button
+              key={siteKey}
+              onClick={() => {
+                setWeightDenominator(jsonShippingCost[siteKey].Denominator);
+                setSite(siteKey);
+              }}
+              style={{
+                backgroundImage: `url(${jsonShippingCost[siteKey].imgUrl})`,
+                filter: site === siteKey ? "brightness(1)" : "opacity(0.2)"
+              }}
+            ></button>
+          ))}
+        </div>
       <table className={styles.calculator}>
         <thead>
           <tr>
@@ -153,7 +162,7 @@ function Home({ styles }) {
         </thead>
         <tbody>
           <tr>
-            <td>Largo (cm)</td>
+            <td>{site === "MLB" ? "Comprimento (cm)": "Largo (cm)"}</td>
             <td>
             <input
               type="number"
@@ -185,7 +194,7 @@ function Home({ styles }) {
             </td>
           </tr>
           <tr>
-            <td>Ancho (cm)</td>
+            <td>{site === "MLB" ? "Largura (cm)": "Ancho (cm)"}</td>
             <td>
               <input
                 type="number"
@@ -218,7 +227,7 @@ function Home({ styles }) {
             </td>
           </tr>
           <tr>
-            <td>Alto (cm)</td>
+            <td>Altura (cm)</td>
             <td>
               <input
                 type="number"
@@ -280,8 +289,8 @@ function Home({ styles }) {
           </tr>
           <tr>
             <td>Peso utilizado</td>
-            <td>{(userLength * userWidth * userHeight) / weightDenominator > userWeight ? "Peso volumétrico" : "Peso físico"}</td>
-            <td>{(systemLength * systemWidth * systemHeight) / weightDenominator > systemWeight ? "Peso volumétrico" : "Peso físico"}</td>
+            <td>{userWeight > 2 ? (userLength * userWidth * userHeight) / weightDenominator > userWeight ? "Peso volumétrico > físico" : "Peso físico > volumétrico" : "Peso Físico < 2kg"}</td>
+            <td>{systemWeight > 2 ? (systemLength * systemWidth * systemHeight) / weightDenominator > systemWeight ? "Peso volumétrico > físico" : "Peso físico > volumétrico" : "Peso Físico < 2kg"}</td>
           </tr>
           <tr>
             <td>Categoria:</td>

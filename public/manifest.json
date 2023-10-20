@@ -6,12 +6,7 @@
   "action": {
     "default_popup": "index.html",
     "default_title": "Open SCC",
-    "default_icon": "logo.png"
+    "default_icon": "SCCLogo.png"
   },
-  "content_scripts": [
-    {
-      "matches": ["<all_urls>"],
-      "js": ["content.js"]
-    }
-  ]
+  "permissions": []
 }

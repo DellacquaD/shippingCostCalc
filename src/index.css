@@ -10,6 +10,8 @@
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
   font-size: 14px;
+  /* max-height: 400px;
+  overflow-y: scroll */
 }
 
 a {
