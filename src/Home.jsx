@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import jsonShippingCost from "./shippingCost.json";
+// import jsonShippingCost from "./shippingCost.json";
 
 function Home({ styles }) {
   const [userLength, setUserLength] = useState(0)
@@ -13,6 +13,23 @@ function Home({ styles }) {
   const [weightDenominator, setWeightDenominator] = useState(4000)
   const [site, setSite] = useState("MLM")
   const [tarifa, setTarifa] = useState({})
+  const [jsonShippingCost, setJsonShippingCost] = useState({})
+
+  useEffect(() => {
+    // Envia un mensaje al archivo de fondo para obtener los datos
+    chrome.runtime.sendMessage({ action: "getShippingData" }, response => {
+      if (chrome.runtime.lastError) {
+        console.error(chrome.runtime.lastError);
+      } else if (response.error) {
+        console.error(response.error);
+      } else {
+        // Aquí puedes utilizar los datos recibidos en 'response.data'
+        console.log(response.data);
+        // Procesa y actualiza los datos según sea necesario
+        setJsonShippingCost(response.data);
+      }
+    });
+  }, []);
 
   useEffect(() => {
     const findTarifa = (peso, site) => {

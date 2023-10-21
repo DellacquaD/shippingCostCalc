@@ -8,5 +8,14 @@
     "default_title": "Open SCC",
     "default_icon": "SCCLogo.png"
   },
-  "permissions": []
+  "permissions": [
+    "activeTab",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://raw.githubusercontent.com/DellacquaD/shippingCostCalc/main/src/shippingCost.json"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  }
 }
