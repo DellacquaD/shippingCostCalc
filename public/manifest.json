@@ -9,7 +9,6 @@
     "default_icon": "SCCLogo.png"
   },
   "permissions": [
-    "identity",
     "storage"
   ],
   "host_permissions": [
