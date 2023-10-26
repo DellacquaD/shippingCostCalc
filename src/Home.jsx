@@ -312,7 +312,7 @@ function Home({ styles }) {
             </td>
             <td>
             {measurements.systemLength && measurements.systemWidth && measurements.systemHeight ? 
-            (measurements.userLength * measurements.userWidth * measurements.userHeight) / measurements.denominator : 
+            (measurements.systemLength * measurements.systemWidth * measurements.systemHeight) / measurements.denominator : 
             "-"}
             </td>
           </tr>
