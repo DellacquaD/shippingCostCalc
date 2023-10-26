@@ -91,8 +91,8 @@ function Home({ styles }) {
     };  
     const userPeso = (measurements.userLength * measurements.userWidth * measurements.userHeight) / measurements.denominator;
     const systemPeso = (measurements.systemLength * measurements.systemWidth * measurements.systemHeight) / measurements.denominator;
-    const usedWeightUser = measurements.userWeight > 2 ? userPeso > processUserWeight(measurements.userWeight) ? userPeso : processUserWeight(measurements.userWeight) : measurements.userWeight;
-    const usedWeightSystem = measurements.systemWeight > 2 ? systemPeso > processSystemWeight(measurements.systemWeight) ? systemPeso : processSystemWeight(measurements.systemWeight) : measurements.systemWeight;
+    const usedWeightUser = measurements.userWeight > 2 ? userPeso > processUserWeight(measurements.userWeight) ? userPeso : processUserWeight(measurements.userWeight) : measurements.site === "MLA" ? measurements.userWeight : userPeso > processUserWeight(measurements.userWeight) ? userPeso : processUserWeight(measurements.userWeight);
+    const usedWeightSystem = measurements.systemWeight > 2 ? systemPeso > processSystemWeight(measurements.systemWeight) ? systemPeso : processSystemWeight(measurements.systemWeight) : measurements.site === "MLA" ? measurements.systemWeight : systemPeso > processSystemWeight(measurements.systemWeight) ? systemPeso : processSystemWeight(measurements.systemWeight);
     const userTarifa = findTarifa(usedWeightUser, measurements.site);
     const systemTarifa = findTarifa(usedWeightSystem, measurements.site);
     
