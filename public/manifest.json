@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Shipping Cost Calculator",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Calculator for shipping cost in Mercado Libre",
   "action": {
     "default_popup": "index.html",
