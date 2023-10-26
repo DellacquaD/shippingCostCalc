@@ -20,20 +20,20 @@ input {
 }
 
 .class0 {
-    background-color: #00FF00;
+  background-color: rgba(163, 241, 187, 0.61) ;
     color: black;
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .class1 {
-    background-color: #FFD700;
+  background-color: rgba(241, 241, 163, 0.61);
     color: black;
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .class2 {
-    background-color: #FF6666;
-    font-weight: 600;
+  background-color: rgba(241, 163, 187, 0.61);
+    font-weight: 700;
     color: black;
 }
 
@@ -46,6 +46,7 @@ input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer
   display: flex;
   justify-content: space-around;
   padding: 5px;
+  gap: 25px;
 }
 
 .sites > button {
@@ -79,13 +80,9 @@ article {
   border: none;
 }
 
-
-/* Estilos para el contenedor principal */
-/* Estilos para la tabla */
 .calculator {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 20px;
   border: 2px solid #333;
 }
 
@@ -98,7 +95,6 @@ article {
   border-radius: 20px;
 }
 
-/* Estilos para las celdas de encabezado */
 th {
   background-color: #333;
   color: white;
@@ -107,41 +103,62 @@ th {
   border: 1px solid #555;
 }
 
-/* Estilos para las celdas de datos */
+.shippingCost {
+  background-color: #333;
+  color: white;
+}
+
 td {
   text-align: center;
   padding: 5px;
   border: 1px solid #555;
 }
 
-/* Estilos para filas alternas (para mejorar la legibilidad) */
-
-/* Estilos para filas al pasar el mouse (resaltado) */
-
-/* Estilo para la primera columna (en este caso, la columna de etiquetas) */
-
-/* Estilos para las celdas vacías en la primera columna */
 td:first-child:empty {
   font-weight: normal;
   background-color: transparent;
 }
 
 .yellowRepu {
-  background-color: #FFD700 ;
+  background-color: rgba(241, 241, 163, 0.61);
   color: black;
   font-weight: 600;
 
 }
 
 .greenRepu {
-  background-color: #00FF00 ;
+  background-color: rgba(163, 241, 187, 0.61) ;
   color: black;
   font-weight: 600;
 }
 
 .redsRepu {
-  background-color: #FF6666 ;
+  background-color: rgba(241, 163, 187, 0.61)
+  ;
   font-weight: 600;
   color: black;
 
+}
+
+.createTask {
+  background-color: rgba(163, 241, 187, 0.61);
+}
+
+.noCreateTask {
+  background-color: #fc9a9a86;
+}
+
+.noDisplay {
+  display: none
+}
+
+.messageText {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.messageText > svg:hover {
+  cursor: pointer;
+  scale: 1.1;
 }

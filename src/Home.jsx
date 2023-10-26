@@ -1,31 +1,44 @@
 import React, { useState, useEffect } from "react";
-// import jsonShippingCost from "./shippingCost.json";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCopy } from '@fortawesome/free-regular-svg-icons'
+
+function copyToClipboard(message) {
+
+  const textArea = document.createElement('textarea');
+  textArea.value = message;
+  document.body.appendChild(textArea);
+  textArea.select();
+  document.execCommand('copy');
+  document.body.removeChild(textArea);
+  alert('Mensaje copiado al portapapeles');
+}
 
 function Home({ styles }) {
-  const [userLength, setUserLength] = useState(0)
-  const [userWidth, setUserWidth] = useState(0)
-  const [userHeight, setUserHeight] = useState(0)
-  const [userWeight, setUserWeight] = useState("")
-  const [systemLength, setSystemLength] = useState(0)
-  const [systemWidth, setSystemWidth] = useState(0)
-  const [systemHeight, setSystemHeight] = useState(0)
-  const [systemWeight, setSystemWeight] = useState("")
-  const [weightDenominator, setWeightDenominator] = useState(4000)
-  const [site, setSite] = useState("MLM")
-  const [tarifa, setTarifa] = useState({})
+  const [measurements, setMeasurements] = useState({
+    site: "",
+    denominator: 1,
+    userLength: 0,
+    userWidth: 0,
+    userHeight: 0,
+    userWeight: "",
+    systemLength: 0,
+    systemWidth: 0,
+    systemHeight: 0,
+    systemWeight: "",
+    userTarifa: null,
+    systemTarifa: null,
+  });
+  const [allInputsComplete, setAllInputsComplete] = useState(false);
   const [jsonShippingCost, setJsonShippingCost] = useState({})
-
+  const [message, setMessage] = useState("")
+  
   useEffect(() => {
-    // Envia un mensaje al archivo de fondo para obtener los datos
     chrome.runtime.sendMessage({ action: "getShippingData" }, response => {
       if (chrome.runtime.lastError) {
         console.error(chrome.runtime.lastError);
       } else if (response.error) {
         console.error(response.error);
       } else {
-        // Aquí puedes utilizar los datos recibidos en 'response.data'
-        console.log(response.data);
-        // Procesa y actualiza los datos según sea necesario
         setJsonShippingCost(response.data);
       }
     });
@@ -33,7 +46,7 @@ function Home({ styles }) {
 
   useEffect(() => {
     const findTarifa = (peso, site) => {
-      const tarifas = jsonShippingCost[site]?.Tarifas;
+      const tarifas = jsonShippingCost[measurements.site]?.Tarifas;
       if (tarifas) {
         for (const rango in tarifas) {
           if (rango.startsWith("Hasta")) {
@@ -41,7 +54,8 @@ function Home({ styles }) {
             if (peso <= limiteSuperior) {
               return {
                 clave: rango,
-                valor: parseFloat(tarifas[rango].replace(",", "").replace("$", "").trim())
+                valor: parseFloat(tarifas[rango].replace(",", "").replace("$", "").trim()),
+                index: Object.keys(tarifas).indexOf(rango),
               };
             }
           } else if (rango.startsWith("Más de")) {
@@ -49,7 +63,8 @@ function Home({ styles }) {
             if (peso >= limiteInferior) {
               return {
                 clave: rango,
-                valor: parseFloat(tarifas[rango].replace(",", "").replace("$", "").trim())
+                valor: parseFloat(tarifas[rango].replace(",", "").replace("$", "").trim()),
+                index: Object.keys(tarifas).indexOf(rango),
               };
             }
           } else {
@@ -59,77 +74,93 @@ function Home({ styles }) {
             if (peso > limiteInferior && peso <= limiteSuperior) {
               return {
                 clave: rango,
-                valor: parseFloat(tarifas[rango].replace(",", "").replace("$", "").trim())
+                valor: parseFloat(tarifas[rango].replace(",", "").replace("$", "").trim()),
+                index: Object.keys(tarifas).indexOf(rango),
               };
             }
           }
         }
-        // Si no se encuentra ninguna coincidencia, regresa el valor de la primera tarifa
+        const primeraClave = Object.keys(tarifas)[0];
         return {
-          clave: Object.keys(tarifas)[0],
-          valor: parseFloat(tarifas[Object.keys(tarifas)[0]].replace(",", "").replace("$", "").trim())
+          clave: primeraClave,
+          valor: parseFloat(tarifas[primeraClave].replace(",", "").replace("$", "").trim()),
+          index: Object.keys(tarifas).indexOf(primeraClave),
         };
       }
       return null;
-    };    
+    };  
+    const userPeso = (measurements.userLength * measurements.userWidth * measurements.userHeight) / measurements.denominator;
+    const systemPeso = (measurements.systemLength * measurements.systemWidth * measurements.systemHeight) / measurements.denominator;
+    const usedWeightUser = measurements.userWeight > 2 ? userPeso > processUserWeight(measurements.userWeight) ? userPeso : processUserWeight(measurements.userWeight) : measurements.userWeight;
+    const usedWeightSystem = measurements.systemWeight > 2 ? systemPeso > processSystemWeight(measurements.systemWeight) ? systemPeso : processSystemWeight(measurements.systemWeight) : measurements.systemWeight;
+    const userTarifa = findTarifa(usedWeightUser, measurements.site);
+    const systemTarifa = findTarifa(usedWeightSystem, measurements.site);
+    
+    setMeasurements((prevMeasurements) => ({
+      ...prevMeasurements,
+      userTarifa,
+      systemTarifa,
+    }));
 
-    const userPeso = (userLength * userWidth * userHeight) / weightDenominator;
-    const systemPeso = (systemLength * systemWidth * systemHeight) / weightDenominator;
-
-    
-    const usedWeightUser = userWeight > 2 ? userPeso > processUserWeight(userWeight) ? userPeso : processUserWeight(userWeight) : userWeight;
-    const usedWeightSystem = systemWeight > 2 ? systemPeso > processSystemWeight(systemWeight) ? systemPeso : processSystemWeight(systemWeight): systemWeight;
-    
-    const userTarifa = findTarifa(usedWeightUser, site);
-    const systemTarifa = findTarifa(usedWeightSystem, site);
-    
-    // Actualizar las tarifas en el estado
-    
-    setTarifa({
-      user: userTarifa,
-      system: systemTarifa,
-    });
+    const allInputsComplete = 
+    measurements.userLength > 0 &&
+    measurements.userWidth > 0 &&
+    measurements.userHeight > 0 &&
+    measurements.userWeight !== "" &&
+    measurements.systemLength > 0 &&
+    measurements.systemWidth > 0 &&
+    measurements.systemHeight > 0 &&
+    measurements.systemWeight !== "";
+    setAllInputsComplete(allInputsComplete);
+    const message = "Medidas del usuario: " + measurements.userLength + "cm x " + measurements.userWidth + "cm x " + measurements.userHeight + "cm, " + measurements.userWeight + "kg. "  + "\n" + "Medidas del sistema: " + measurements.systemLength + "cm x " + measurements.systemWidth + "cm x" + measurements.systemHeight + "cm, " + measurements.systemWeight + "kg.";
+    setMessage(allInputsComplete ? message : "")
   }, [
-    userLength,
-    userWidth,
-    userHeight,
-    userWeight,
-    systemLength,
-    systemWidth,
-    systemHeight,
-    systemWeight,
-    weightDenominator,
-    site,
+    measurements,
   ]);
+
+  useEffect(() => {
+    chrome.runtime.sendMessage({ action: "getLocalStorage", keys: ["site", "denominator", "userLength", "userWidth", "userHeight", "userWeight", "systemLength", "systemWidth", "systemHeight", "systemWeight"] }, (response) => {
+      if (chrome.runtime.lastError) {
+        console.error(chrome.runtime.lastError);
+        return;
+      }
+      if (response && response.data) {
+        setMeasurements((prevMeasurements) => ({
+          ...prevMeasurements,
+          ...response.data,
+        }));
+      }
+    });
+  }, []);
+
   
   const processUserWeight = (value) => {
-    // Reemplaza comas por puntos para asegurarte de que el número sea válido
     const processedValue = value.replace(/,/g, ".");
-    // Convierte el valor en un número decimal
     const weight = parseFloat(processedValue);
-    return !isNaN(weight) ? parseFloat(weight.toFixed(2)) : 0; // Redondea a 2 decimales y luego convierte a número
+    return !isNaN(weight) ? parseFloat(weight.toFixed(2)) : 0;
   };
 
   const processSystemWeight = (value) => {
-    // Reemplaza comas por puntos para asegurarte de que el número sea válido
     const processedValue = value.replace(/,/g, ".");
-    // Convierte el valor en un número decimal
     const weight = parseFloat(processedValue);
-    return !isNaN(weight) ? parseFloat(weight.toFixed(2)) : 0; // Si no es un número válido, usa 0
+    return !isNaN(weight) ? parseFloat(weight.toFixed(2)) : 0;
   };
 
-  // // Obtén el costo de envío basado en tarifas
-  //   const userCostoEnvio = tarifa.user ? tarifa.user.clave : "-";
-  //   const systemCostoEnvio = tarifa.system ? tarifa.system.clave : "-";
 
-  const getColorDiscount = (site, tipoDescuento) => {
-    const descuentos = jsonShippingCost[site]?.Descuentos;
-    
-    if (descuentos && descuentos[tipoDescuento]) {
-      return descuentos[tipoDescuento];
-    }
-    
-    return 0;
+  const handleMeasurementChange = (key, value) => {
+    setMeasurements((prevMeasurements) => ({
+      ...prevMeasurements,
+      [key]: value,
+    }));
+    chrome.runtime.sendMessage({ action: "setLocalStorage", key, value });
+  };
+
+  const handleSiteSelect = (key, value) => {
+    setMeasurements((prevMeasurements) => ({
+      ...prevMeasurements,
+      [key]: value,
+    }));
+    chrome.runtime.sendMessage({ action: "setLocalStorage", key, value });
   };
 
   const getUniqueKeys = (site) => {
@@ -148,27 +179,28 @@ function Home({ styles }) {
     return Array.from(uniqueKeys);
   };
   
-  const uniqueKeys = getUniqueKeys(site);
+  const uniqueKeys = getUniqueKeys(measurements.site);
   
-
   return (
     <div className={styles.home}>
-      <h2>{site === "MLB" ? "Custos de envio" : "Costos de envío"}</h2>
-       <div className={styles.sites}>
-          {Object.keys(jsonShippingCost).map(siteKey => (
-            <button
-              key={siteKey}
-              onClick={() => {
-                setWeightDenominator(jsonShippingCost[siteKey].Denominator);
-                setSite(siteKey);
-              }}
-              style={{
-                backgroundImage: `url(${jsonShippingCost[siteKey].imgUrl})`,
-                filter: site === siteKey ? "brightness(1)" : "opacity(0.2)"
-              }}
-            ></button>
-          ))}
-        </div>
+      {measurements.site ? "" : <h2>Site</h2>}
+      <div className={styles.sites}>
+        {Object.keys(jsonShippingCost).map(siteKey => (
+          <button
+            key={siteKey}
+            onClick={() => {
+              const denominator = jsonShippingCost[siteKey].Denominator;
+              handleSiteSelect("site", siteKey);
+              handleSiteSelect("denominator", denominator);
+            }}
+            style={{
+              backgroundImage: `url(${jsonShippingCost[siteKey].imgUrl})`,
+              filter: measurements.site === siteKey ? "brightness(1)" : "opacity(0.2)"
+            }}
+          ></button>
+        ))}
+      </div>
+      {measurements.site ? 
       <table className={styles.calculator}>
         <thead>
           <tr>
@@ -179,66 +211,48 @@ function Home({ styles }) {
         </thead>
         <tbody>
           <tr>
-            <td>{site === "MLB" ? "Comprimento (cm)": "Largo (cm)"}</td>
+            <td>{measurements.site === "MLB" ? "Comprimento (cm)" : "Largo (cm)"}</td>
             <td>
-            <input
-              type="number"
-              value={userLength}
-              onChange={(e) => setUserLength(e.target.value)}
-              onMouseDown={() => setUserLength("")}
-              onBlur={(e) => {
-                const value = parseFloat(e.target.value);
-                if (!isNaN(value)) {
-                  setUserLength(Math.ceil(value));
-                }
-              }}
-            />
+              <input
+                type="number"
+                value={measurements.userLength}
+                onChange={e => {
+                  handleMeasurementChange("userLength", e.target.value);
+                }}
+                onMouseDown={() => handleMeasurementChange("userLength", "")}
+                onBlur={() => handleMeasurementChange("userLength", Math.ceil(measurements.userLength))}
+              />
             </td>
             <td>
               <input
                 type="number"
-                value={systemLength}
-                onChange={(e) => setSystemLength(e.target.value)}
-                onClick={() => setSystemLength("")}
-                onBlur={(e) => {
-                  const value = parseFloat(e.target.value);
-                  if (!isNaN(value)) {
-                    setSystemLength(Math.ceil(value));
-                  }
-                }}
+                value={measurements.systemLength}
+                onChange={e => handleMeasurementChange("systemLength", e.target.value)}
+                onClick={() => handleMeasurementChange("systemLength", "")}
+                onBlur={() => handleMeasurementChange("systemLength", Math.ceil(measurements.systemLength))}
                 step="1"
               />
             </td>
           </tr>
           <tr>
-            <td>{site === "MLB" ? "Largura (cm)": "Ancho (cm)"}</td>
+            <td>{measurements.site === "MLB" ? "Largura (cm)" : "Ancho (cm)"}</td>
             <td>
               <input
                 type="number"
-                value={userWidth}
-                onChange={(e) => setUserWidth(e.target.value)}
-                onClick={() => setUserWidth("")}
-                onBlur={(e) => {
-                  const value = parseFloat(e.target.value);
-                  if (!isNaN(value)) {
-                    setUserWidth(Math.ceil(value));
-                  }
-                }}
+                value={measurements.userWidth}
+                onChange={e => handleMeasurementChange("userWidth", e.target.value)}
+                onClick={() => handleMeasurementChange("userWidth", "")}
+                onBlur={() => handleMeasurementChange("userWidth", Math.ceil(measurements.userWidth))}
                 step="1"
               />
             </td>
             <td>
               <input
                 type="number"
-                value={systemWidth}
-                onChange={(e) => setSystemWidth(e.target.value)}
-                onClick={() => setSystemWidth("")}
-                onBlur={(e) => {
-                  const value = parseFloat(e.target.value);
-                  if (!isNaN(value)) {
-                    setSystemWidth(Math.ceil(value));
-                  }
-                }}
+                value={measurements.systemWidth}
+                onChange={e => handleMeasurementChange("systemWidth", e.target.value)}
+                onClick={() => handleMeasurementChange("systemWidth", "")}
+                onBlur={() => handleMeasurementChange("systemWidth", Math.ceil(measurements.systemWidth))}
                 step="1"
               />
             </td>
@@ -248,30 +262,20 @@ function Home({ styles }) {
             <td>
               <input
                 type="number"
-                value={userHeight}
-                onChange={(e) => setUserHeight(e.target.value)}
-                onClick={() => setUserHeight("")}
-                onBlur={(e) => {
-                  const value = parseFloat(e.target.value);
-                  if (!isNaN(value)) {
-                    setUserHeight(Math.ceil(value));
-                  }
-                }}
+                value={measurements.userHeight}
+                onChange={e => handleMeasurementChange("userHeight", e.target.value)}
+                onClick={() => handleMeasurementChange("userHeight", "")}
+                onBlur={() => handleMeasurementChange("userHeight", Math.ceil(measurements.userHeight))}
                 step="1"
               />
             </td>
             <td>
               <input
                 type="number"
-                value={systemHeight}
-                onChange={(e) => setSystemHeight(e.target.value)}
-                onClick={() => setSystemHeight("")}
-                onBlur={(e) => {
-                  const value = parseFloat(e.target.value);
-                  if (!isNaN(value)) {
-                    setSystemHeight(Math.ceil(value));
-                  }
-                }}
+                value={measurements.systemHeight}
+                onChange={e => handleMeasurementChange("systemHeight", e.target.value)}
+                onClick={() => handleMeasurementChange("systemHeight", "")}
+                onBlur={() => handleMeasurementChange("systemHeight", Math.ceil(measurements.systemHeight))}
                 step="1"
               />
             </td>
@@ -282,9 +286,9 @@ function Home({ styles }) {
               <input
                 type="number"
                 placeholder="0.0"
-                value={userWeight}
-                onChange={(e) => {setUserWeight(e.target.value) ; processUserWeight(e.target.value) }}
-                onClick={() => setUserWeight("")}
+                value={measurements.userWeight}
+                onChange={e => handleMeasurementChange("userWeight", e.target.value)}
+                onClick={() => handleMeasurementChange("userWeight", "")}
                 step="0.01"
               />
             </td>
@@ -292,30 +296,57 @@ function Home({ styles }) {
               <input
                 type="number"
                 placeholder="0.0"
-                value={systemWeight}
-                onChange={(e) => {setSystemWeight(e.target.value) ; processSystemWeight(e.target.value) }}
-                onClick={() => setSystemWeight("")}
+                value={measurements.systemWeight}
+                onChange={e => handleMeasurementChange("systemWeight", e.target.value)}
+                onClick={() => handleMeasurementChange("systemWeight", "")}
                 step="0.01"
               />
             </td>
           </tr>
           <tr>
             <td>Peso volumétrico</td>
-            <td>{(userLength * userWidth * userHeight) / weightDenominator}</td>
-            <td>{(systemLength * systemWidth * systemHeight) / weightDenominator}</td>
+            <td>
+            {measurements.userLength && measurements.userWidth && measurements.userHeight ? 
+            (measurements.userLength * measurements.userWidth * measurements.userHeight) / measurements.denominator :
+            "-"}
+            </td>
+            <td>
+            {measurements.systemLength && measurements.systemWidth && measurements.systemHeight ? 
+            (measurements.userLength * measurements.userWidth * measurements.userHeight) / measurements.denominator : 
+            "-"}
+            </td>
           </tr>
           <tr>
             <td>Peso utilizado</td>
-            <td>{userWeight > 2 ? (userLength * userWidth * userHeight) / weightDenominator > userWeight ? "Peso volumétrico > físico" : "Peso físico > volumétrico" : "Peso Físico < 2kg"}</td>
-            <td>{systemWeight > 2 ? (systemLength * systemWidth * systemHeight) / weightDenominator > systemWeight ? "Peso volumétrico > físico" : "Peso físico > volumétrico" : "Peso Físico < 2kg"}</td>
+            <td>
+            { measurements.site === "MLA" ?
+            measurements.userWeight > 2 ? (measurements.userLength * measurements.userWidth * measurements.userHeight) / measurements.denominator > measurements.userWeight ? "Peso volumétrico > físico" : "Peso físico > volumétrico" : "Peso Físico < 2kg" : 
+            (measurements.userLength * measurements.userWidth * measurements.userHeight) / measurements.denominator > measurements.userWeight ? "Peso volumétrico > físico" : "Peso físico > volumétrico"}
+            </td>
+            <td>
+            { measurements.site === "MLA" ?
+            measurements.systemWeight > 2 ? (measurements.systemLength * measurements.systemWidth * measurements.systemHeight) / measurements.denominator > measurements.systemWeight ? "Peso volumétrico > físico" : "Peso físico > volumétrico" : "Peso Físico < 2kg" : 
+            (measurements.systemLength * measurements.systemWidth * measurements.systemHeight) / measurements.denominator > measurements.systemWeight ? "Peso volumétrico > físico" : "Peso físico > volumétrico"}
+            </td>
           </tr>
           <tr>
             <td>Categoria:</td>
-            <td>{tarifa.user ? tarifa.user.clave : "-"}</td>
-            <td>{tarifa.system ? tarifa.system.clave : "-"}</td>
+            <td>{measurements.userTarifa ? measurements.userTarifa.clave : "-"}</td>
+            <td>{measurements.systemTarifa ? measurements.systemTarifa.clave : "-"}</td>
+          </tr>
+          <tr className={allInputsComplete && measurements.systemTarifa && measurements.userTarifa ? measurements.systemTarifa.index > measurements.userTarifa.index ? styles.createTask : styles.noCreateTask : styles.noDisplay}>
+            <td colspan="3">
+              {allInputsComplete && measurements.systemTarifa && measurements.userTarifa ? 
+              measurements.systemTarifa.index > measurements.userTarifa.index ? 
+              <div className={styles.messageText}>Crear tarea de oneTask para la bodega con stock.<FontAwesomeIcon onClick={() => copyToClipboard(message)}icon={faCopy}/></div>:
+              measurements.systemTarifa.index === measurements.userTarifa.index ? 
+                "No crear tarea, no hay cambio en el valor." :
+              "No crear tarea, las medidas del sistema son menores que las del usuario." : 
+            ""}
+            </td>
           </tr>
           <tr>
-          <td>Costo de envío</td>
+          <td className={styles.shippingCost}>Costos de envío</td>
             <td>
               <table>
                 <thead>
@@ -327,12 +358,12 @@ function Home({ styles }) {
                   </tr>
                 </thead>
                 <tbody>
-                {Object.keys(jsonShippingCost[site]?.Descuentos || {}).map((tipoDescuento, index) => (
+                {Object.keys(jsonShippingCost[measurements.site]?.Descuentos || {}).map((tipoDescuento, index) => (
                   <tr key={tipoDescuento}>
                     <td className={styles[`class${index}`]}> {tipoDescuento}</td>
                     {uniqueKeys.map((clave) => (
                       <td className={styles[`class${index}`]} key={clave}>
-                        {tarifa.user ? "$" + (tarifa.user.valor * (1 - (jsonShippingCost[site]?.Descuentos[tipoDescuento][clave] ? jsonShippingCost[site]?.Descuentos[tipoDescuento][clave] / 100 : 0))).toFixed(2) : '0.00'}
+                        {measurements.userTarifa ? "$" + (measurements.userTarifa.valor * (1 - (jsonShippingCost[measurements.site]?.Descuentos[tipoDescuento][clave] ? jsonShippingCost[measurements.site]?.Descuentos[tipoDescuento][clave] / 100 : 0))).toFixed(2) : '0.00'}
                       </td>
                     ))}
                   </tr>
@@ -351,12 +382,12 @@ function Home({ styles }) {
                   </tr>
                 </thead>
                 <tbody>
-                  {Object.keys(jsonShippingCost[site]?.Descuentos || {}).map((tipoDescuento, index) => (
+                  {Object.keys(jsonShippingCost[measurements.site]?.Descuentos || {}).map((tipoDescuento, index) => (
                     <tr className={styles[tipoDescuento]} key={tipoDescuento}>
                       <td className={styles[`class${index}`]} >{tipoDescuento}</td>
                       {uniqueKeys.map((clave) => (
                         <td className={styles[`class${index}`]} key={clave}>
-                          {tarifa.system ? "$" + (tarifa.system.valor * (1 - (jsonShippingCost[site]?.Descuentos[tipoDescuento][clave] ? jsonShippingCost[site]?.Descuentos[tipoDescuento][clave] / 100 : 0))).toFixed(2) : '0.00'}
+                          {measurements.systemTarifa ? "$" + (measurements.systemTarifa.valor * (1 - (jsonShippingCost[measurements.site]?.Descuentos[tipoDescuento][clave] ? jsonShippingCost[measurements.site]?.Descuentos[tipoDescuento][clave] / 100 : 0))).toFixed(2) : '0.00'}
                         </td>
                       ))}
                     </tr>
@@ -367,6 +398,7 @@ function Home({ styles }) {
           </tr>     
         </tbody>
       </table>
+      : ""}
     </div>
   );
 }
