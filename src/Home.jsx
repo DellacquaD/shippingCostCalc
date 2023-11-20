@@ -46,7 +46,7 @@ function Home({ styles }) {
 
   useEffect(() => {
     const findTarifa = (peso, site) => {
-      const tarifas = jsonShippingCost[measurements.site]?.Tarifas;
+      const tarifas = jsonShippingCost[site]?.Tarifas;
       if (tarifas) {
         for (const rango in tarifas) {
           if (rango.startsWith("Hasta")) {
@@ -331,8 +331,8 @@ function Home({ styles }) {
           </tr>
           <tr>
             <td>Categoria:</td>
-            <td>{measurements.userTarifa ? measurements.userTarifa.clave : "-"}</td>
-            <td>{measurements.systemTarifa ? measurements.systemTarifa.clave : "-"}</td>
+            <td>{measurements.userTarifa ? `${measurements.userTarifa.clave} ($${measurements.userTarifa.valor})` : "-"}</td>
+            <td>{measurements.systemTarifa ? `${measurements.systemTarifa.clave} ($${measurements.systemTarifa.valor})` : "-"}</td>
           </tr>
           <tr className={allInputsComplete && measurements.systemTarifa && measurements.userTarifa ? measurements.systemTarifa.index > measurements.userTarifa.index ? styles.createTask : styles.noCreateTask : styles.noDisplay}>
             <td colspan="3">

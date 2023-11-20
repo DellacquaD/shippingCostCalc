@@ -14,6 +14,7 @@
             }
           }, 
           "Denominator" :  5000,
+          "tyc": "https://www.mercadolibre.com.mx/ayuda/3287",
           "imgUrl" : "/flags/mexico_ico.png",
           "Tarifas" : {
             "Hasta 0.5 Kg": "$ 125",
@@ -61,6 +62,7 @@
           }
         }, 
         "Denominator" :  4505,
+        "tyc": "https://www.mercadolibre.com.co/ayuda/3287",
         "imgUrl" : "/flags/colombia_ico.png",
         "Tarifas" : {
           "Hasta 3 Kg": "$ 13,000",
@@ -91,18 +93,19 @@
           },
         "Denominator" :  4000,
         "imgUrl" : "/flags/argentina_ico.png",
+        "tyc": "https://www.mercadolibre.com.ar/ayuda/30524",
         "Tarifas": {
-            "Hasta 0,3 Kg": "$ 2,849.99",
-            "0,3 a 0,5 Kg": "$ 2,904.99",
-            "0,5 a 1 Kg": "$ 3,509.99",
-            "1 a 2 Kg": "$ 3,729.99",
-            "2 a 5 Kg": "$ 4,594.99",
-            "5 a 10 Kg": "$ 5,434.99",
-            "10 a 15 Kg": "$ 6,289.99",
-            "15 a 20 Kg": "$ 7,374.99",
-            "20 a 25 Kg": "$ 8,039.99",
-            "Más de 25 Kg": "$ 11,389.99"
-          }
+          "Hasta 0,3 Kg": "$ 3,559.99",
+          "0,3 a 0,5 Kg": "$ 3,629.99",
+          "0,5 a 1 Kg": "$ 4,384.99",
+          "1 a 2 Kg": "$ 4,659.99",
+          "2 a 5 Kg": "$ 5,744.99",
+          "5 a 10 Kg": "$ 6,794.99",
+          "10 a 15 Kg": "$ 7,859.99",
+          "15 a 20 Kg": "$ 9,219.99",
+          "20 a 25 Kg": "$ 10,049.99",
+          "Más de 25 Kg": "$ 14,234.99"
+        }
     },
     "MLC" : {
         "Descuentos": {
@@ -118,17 +121,24 @@
           },
         "Denominator" :  4000,
         "imgUrl" : "/flags/chile_ico.png",
+        "tyc": "https://www.mercadolibre.cl/ayuda/27606",
         "Tarifas": {
-            "Hasta 0,5 Kg": "$ 2,904.99",
-            "0,5 a 1 Kg": "$ 3,509.99",
-            "1 a 2 Kg": "$ 3,729.99",
-            "2 a 5 Kg": "$ 4,594.99",
-            "5 a 10 Kg": "$ 5,434.99",
-            "10 a 15 Kg": "$ 6,289.99",
-            "15 a 20 Kg": "$ 7,374.99",
-            "20 a 25 Kg": "$ 8,039.99",
-            "Más de 25 Kg": "$ 11,389.99"
-          }
+          "Hasta 0,5 Kg": "$ 5,400",
+          "0,5 a 1,0 Kg": "$ 5,600",
+          "1,0 a 1,5 Kg": "$ 5,700",
+          "1,5 a 3 Kg": "$ 6,500",
+          "3 Kg a 6 Kg": "$ 9,000",
+          "6 Kg a 10 Kg": "$ 10,700",
+          "10 Kg a 15 Kg": "$ 13,200",
+          "15 Kg a 20 Kg": "$ 15,100",
+          "20 Kg a 25 Kg": "$ 18,600",
+          "25 Kg a 30 Kg": "$ 25,200",
+          "30 Kg a 40 Kg": "$ 27,400",
+          "40 Kg a 50 Kg": "$ 34,900",
+          "50 Kg a 60 Kg": "$ 36,300",
+          "60 Kg a 70 Kg": "$ 37,600",
+          "Más de 70 Kg": "$ 39,100"
+        }
     },
     "MLB" : {
         "Descuentos": {
@@ -144,6 +154,7 @@
           },
         "Denominator" :  6000,
         "imgUrl" : "/flags/brasil_ico.png",
+        "tyc": "https://www.mercadolivre.com.br/ajuda/Custos-de-frete-gratis-pelo-Mercado-Envios_3362",
         "Tarifas": {
           "Até 0,3 Kg": "$ 37.90",
           "0,3 a 0,5 Kg": "$ 38.90",
