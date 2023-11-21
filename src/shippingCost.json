@@ -82,10 +82,10 @@
     "MLA" : {
         "Descuentos": {
           "Mercado Lideres, Tiendas oficiales y Reputaciones verdes" : {
-            "Mayor a 10000": 50
+            "Mayor a 16000": 50
           },
           "Reputación amarilla o vendedores sin reputación" : {
-              "Mayor a 10000": 40
+              "Mayor a 16000": 40
           },
             "Reputación naranja o roja" : {
                 "Sin descuento": 0

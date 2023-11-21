@@ -42,12 +42,22 @@ input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer
     margin: 0;
 }
 
-.sites {
+.sitesContainer {
   display: flex;
   justify-content: space-around;
-  padding: 5px;
-  gap: 25px;
+  text-align: center;
+  gap: 5px;
+  margin-top: 10px;
+
 }
+
+.sites {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  gap: 10px;
+}
+
 
 .sites > button {
   width: 60px;

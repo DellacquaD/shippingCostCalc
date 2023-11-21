@@ -184,20 +184,30 @@ function Home({ styles }) {
   return (
     <div className={styles.home}>
       {measurements.site ? "" : <h2>Site</h2>}
-      <div className={styles.sites}>
+      <div className={styles.sitesContainer}>
         {Object.keys(jsonShippingCost).map(siteKey => (
-          <button
-            key={siteKey}
-            onClick={() => {
-              const denominator = jsonShippingCost[siteKey].Denominator;
-              handleSiteSelect("site", siteKey);
-              handleSiteSelect("denominator", denominator);
-            }}
-            style={{
-              backgroundImage: `url(${jsonShippingCost[siteKey].imgUrl})`,
-              filter: measurements.site === siteKey ? "brightness(1)" : "opacity(0.2)"
-            }}
-          ></button>
+          <div className={styles.sites}>
+            <button
+              key={siteKey}
+              onClick={() => {
+                const denominator = jsonShippingCost[siteKey].Denominator;
+                handleSiteSelect("site", siteKey);
+                handleSiteSelect("denominator", denominator);
+              }}
+              style={{
+                backgroundImage: `url(${jsonShippingCost[siteKey].imgUrl})`,
+                filter: measurements.site === siteKey ? "brightness(1)" : "opacity(0.2)"
+              }}
+            >
+            </button>          
+            <a
+              href={jsonShippingCost[siteKey].tyc}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {siteKey}
+            </a>
+          </div>
         ))}
       </div>
       {measurements.site ? 
