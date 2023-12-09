@@ -49,18 +49,21 @@ function Home({ styles }) {
       const tarifas = jsonShippingCost[site]?.Tarifas;
       if (tarifas) {
         for (const rango in tarifas) {
-          if (rango.startsWith("Hasta")) {
-            const limiteSuperior = parseFloat(rango.split(" ")[2].replace(",", "").replace("Kg", ""));
-            if (peso <= limiteSuperior) {
+          const formattedRango = rango.toLowerCase(); // Convertir a minúsculas para manejar variaciones en mayúsculas/minúsculas
+          if (formattedRango.startsWith("hasta")) {
+            const limiteSuperior = parseFloat(formattedRango.split(" ")[2].replace(/,/g, '').replace("kg", "").trim());
+            if (!isNaN(limiteSuperior) && peso > 0 && peso <= limiteSuperior) {
+              console.log(typeof parseFloat(peso), "Hasta", limiteSuperior);
               return {
                 clave: rango,
-                valor: parseFloat(tarifas[rango].replace(",", "").replace("$", "").trim()),
+                valor: parseFloat(tarifas[rango].replace("$", "").trim()),
                 index: Object.keys(tarifas).indexOf(rango),
               };
             }
-          } else if (rango.startsWith("Más de")) {
-            const limiteInferior = parseFloat(rango.split(" ")[2].replace(",", "").replace("Kg", ""));
-            if (peso >= limiteInferior) {
+          } else if (formattedRango.startsWith("más de")) {
+            const limiteInferior = parseFloat(formattedRango.split(" ")[3].replace(/,/g, '').replace("kg", "").trim());
+            if (!isNaN(limiteInferior) && peso >= limiteInferior) {
+              console.log(typeof peso, "Más de", limiteInferior);
               return {
                 clave: rango,
                 valor: parseFloat(tarifas[rango].replace(",", "").replace("$", "").trim()),
@@ -68,10 +71,14 @@ function Home({ styles }) {
               };
             }
           } else {
-            const [limiteInferior, limiteSuperior] = rango
+            const [limiteInferior, limiteSuperior] = formattedRango
               .split(" a ")
-              .map(valor => parseFloat(valor.replace(",", "").replace("Kg", "").trim()));
-            if (peso > limiteInferior && peso <= limiteSuperior) {
+              .map(valor => parseFloat(valor.replace("kg", "").trim()));
+              console.log(formattedRango);
+              console.log(limiteInferior);
+              console.log(limiteSuperior);
+            if (!isNaN(limiteInferior) && !isNaN(limiteSuperior) && peso > limiteInferior && peso <= limiteSuperior) {
+              console.log(typeof parseFloat(peso), limiteInferior, "a", limiteSuperior);
               return {
                 clave: rango,
                 valor: parseFloat(tarifas[rango].replace(",", "").replace("$", "").trim()),
@@ -88,10 +95,11 @@ function Home({ styles }) {
         };
       }
       return null;
-    };  
+    };
+    
     const userPeso = (measurements.userLength * measurements.userWidth * measurements.userHeight) / measurements.denominator;
     const systemPeso = (measurements.systemLength * measurements.systemWidth * measurements.systemHeight) / measurements.denominator;
-    const usedWeightUser = measurements.userWeight > 2 ? userPeso > processUserWeight(measurements.userWeight) ? userPeso : processUserWeight(measurements.userWeight) : measurements.site === "MLA" ? measurements.userWeight : userPeso > processUserWeight(measurements.userWeight) ? userPeso : processUserWeight(measurements.userWeight);
+    const usedWeightUser = (measurements.userWeight) > 2 ? userPeso > parseFloat(processUserWeight(measurements.userWeight)) ? parseFloat(userPeso) : parseFloat(processUserWeight(measurements.userWeight)) : measurements.site === "MLA" ? parseFloat(measurements.userWeight) : parseFloat(userPeso) > parseFloat(processUserWeight(measurements.userWeight)) ? parseFloat(userPeso) : parseFloat(processUserWeight(measurements.userWeight));
     const usedWeightSystem = measurements.systemWeight > 2 ? systemPeso > processSystemWeight(measurements.systemWeight) ? systemPeso : processSystemWeight(measurements.systemWeight) : measurements.site === "MLA" ? measurements.systemWeight : systemPeso > processSystemWeight(measurements.systemWeight) ? systemPeso : processSystemWeight(measurements.systemWeight);
     const userTarifa = findTarifa(usedWeightUser, measurements.site);
     const systemTarifa = findTarifa(usedWeightSystem, measurements.site);
@@ -115,7 +123,7 @@ function Home({ styles }) {
     const message = "Medidas del usuario: " + measurements.userLength + "cm x " + measurements.userWidth + "cm x " + measurements.userHeight + "cm, " + measurements.userWeight + "kg. "  + "\n" + "Medidas del sistema: " + measurements.systemLength + "cm x " + measurements.systemWidth + "cm x" + measurements.systemHeight + "cm, " + measurements.systemWeight + "kg.";
     setMessage(allInputsComplete ? message : "")
   }, [
-    measurements,
+    measurements.userWeight
   ]);
 
   useEffect(() => {
