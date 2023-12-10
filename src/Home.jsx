@@ -50,20 +50,18 @@ function Home({ styles }) {
       if (tarifas) {
         for (const rango in tarifas) {
           const formattedRango = rango.toLowerCase(); // Convertir a minúsculas para manejar variaciones en mayúsculas/minúsculas
-          if (formattedRango.startsWith("hasta")) {
+          if (formattedRango.startsWith("hasta") || formattedRango.startsWith("ate")) {
             const limiteSuperior = parseFloat(formattedRango.split(" ")[2].replace(/,/g, '').replace("kg", "").trim());
             if (!isNaN(limiteSuperior) && peso > 0 && peso <= limiteSuperior) {
-              console.log(typeof parseFloat(peso), "Hasta", limiteSuperior);
               return {
                 clave: rango,
                 valor: parseFloat(tarifas[rango].replace("$", "").trim()),
                 index: Object.keys(tarifas).indexOf(rango),
               };
             }
-          } else if (formattedRango.startsWith("más de")) {
+          } else if (formattedRango.startsWith("más de") || formattedRango.startsWith("maior que")) {
             const limiteInferior = parseFloat(formattedRango.split(" ")[3].replace(/,/g, '').replace("kg", "").trim());
             if (!isNaN(limiteInferior) && peso >= limiteInferior) {
-              console.log(typeof peso, "Más de", limiteInferior);
               return {
                 clave: rango,
                 valor: parseFloat(tarifas[rango].replace(",", "").replace("$", "").trim()),
@@ -74,9 +72,6 @@ function Home({ styles }) {
             const [limiteInferior, limiteSuperior] = formattedRango
               .split(" a ")
               .map(valor => parseFloat(valor.replace("kg", "").trim()));
-              console.log(formattedRango);
-              console.log(limiteInferior);
-              console.log(limiteSuperior);
             if (!isNaN(limiteInferior) && !isNaN(limiteSuperior) && peso > limiteInferior && peso <= limiteSuperior) {
               console.log(typeof parseFloat(peso), limiteInferior, "a", limiteSuperior);
               return {
