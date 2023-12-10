@@ -73,7 +73,6 @@ function Home({ styles }) {
               .split(" a ")
               .map(valor => parseFloat(valor.replace("kg", "").trim()));
             if (!isNaN(limiteInferior) && !isNaN(limiteSuperior) && peso > limiteInferior && peso <= limiteSuperior) {
-              console.log(typeof parseFloat(peso), limiteInferior, "a", limiteSuperior);
               return {
                 clave: rango,
                 valor: parseFloat(tarifas[rango].replace(",", "").replace("$", "").trim()),
