@@ -49,18 +49,19 @@ function Home({ styles }) {
       const tarifas = jsonShippingCost[site]?.Tarifas;
       if (tarifas) {
         for (const rango in tarifas) {
-          const formattedRango = rango.toLowerCase(); // Convertir a minúsculas para manejar variaciones en mayúsculas/minúsculas
-          if (formattedRango.startsWith("hasta") || formattedRango.startsWith("Ate")) {
-            const limiteSuperior = parseFloat(formattedRango.split(" ")[2].replace(/,/g, '').replace("kg", "").trim());
-            if (!isNaN(limiteSuperior) && peso > 0 && peso <= limiteSuperior) {
+          const formattedRango = rango.toLowerCase();
+          if (formattedRango.startsWith("hasta") || formattedRango.startsWith("ate")) {
+            const limiteSuperior = formattedRango.split(" ")[2].replace(/,/g, ".").replace("kg", "").trim();
+            const limiteSuperiorNumber = parseFloat(limiteSuperior).toFixed(2);
+            if (!isNaN(limiteSuperiorNumber) && peso > 0 && peso <= limiteSuperiorNumber) {
               return {
                 clave: rango,
                 valor: parseFloat(tarifas[rango].replace("$", "").trim()),
                 index: Object.keys(tarifas).indexOf(rango),
               };
             }
-          } else if (formattedRango.startsWith("más de") || formattedRango.startsWith("maior que")) {
-            const limiteInferior = parseFloat(formattedRango.split(" ")[3].replace(/,/g, '').replace("kg", "").trim());
+          } else if (formattedRango.startsWith("mas de") || formattedRango.startsWith("maior que")) {
+            const limiteInferior = parseFloat(formattedRango.split(" ")[2].replace(/,/g, ".").replace("kg", "").trim()).toFixed(2);
             if (!isNaN(limiteInferior) && peso >= limiteInferior) {
               return {
                 clave: rango,
@@ -72,6 +73,7 @@ function Home({ styles }) {
             const [limiteInferior, limiteSuperior] = formattedRango
               .split(" a ")
               .map(valor => parseFloat(valor.replace("kg", "").trim()));
+    
             if (!isNaN(limiteInferior) && !isNaN(limiteSuperior) && peso > limiteInferior && peso <= limiteSuperior) {
               return {
                 clave: rango,
@@ -81,6 +83,7 @@ function Home({ styles }) {
             }
           }
         }
+    
         const primeraClave = Object.keys(tarifas)[0];
         return {
           clave: primeraClave,
@@ -89,11 +92,19 @@ function Home({ styles }) {
         };
       }
       return null;
-    };
+    };    
     
-    const userPeso = (measurements.userLength * measurements.userWidth * measurements.userHeight) / measurements.denominator;
+    const userPeso = (parseFloat(measurements.userLength).toFixed(2) * parseFloat(measurements.userWidth).toFixed(2) * parseFloat(measurements.userHeight)).toFixed(2) / measurements.denominator;
     const systemPeso = (measurements.systemLength * measurements.systemWidth * measurements.systemHeight) / measurements.denominator;
-    const usedWeightUser = measurements.userWeight > 2 ? userPeso > parseFloat(processUserWeight(measurements.userWeight)) ? parseFloat(userPeso) : parseFloat(processUserWeight(measurements.userWeight)) : measurements.site === "MLA" ? parseFloat(measurements.userWeight) : parseFloat(userPeso) > parseFloat(processUserWeight(measurements.userWeight)) ? parseFloat(userPeso) : parseFloat(processUserWeight(measurements.userWeight));
+    const usedWeightUser = processUserWeight(measurements.userWeight) > 2
+      ? userPeso > processUserWeight(measurements.userWeight)
+        ? userPeso
+        : processUserWeight(measurements.userWeight)
+      : measurements.site === "MLA"
+        ? measurements.userWeight
+        : userPeso > processUserWeight(measurements.userWeight)
+          ? userPeso
+          : processUserWeight(measurements.userWeight);
     const usedWeightSystem = measurements.systemWeight > 2 ? systemPeso > parseFloat(processSystemWeight(measurements.systemWeight)) ? parseFloat(systemPeso) : parseFloat(processSystemWeight(measurements.systemWeight)) : measurements.site === "MLA" ? parseFloat(measurements.systemWeight) : parseFloat(systemPeso) > parseFloat(processSystemWeight(measurements.systemWeight)) ? parseFloat(systemPeso) : parseFloat(processSystemWeight(measurements.systemWeight));
     const userTarifa = findTarifa(usedWeightUser, measurements.site);
     const systemTarifa = findTarifa(usedWeightSystem, measurements.site);
@@ -140,7 +151,7 @@ function Home({ styles }) {
   const processUserWeight = (value) => {
     const processedValue = value.replace(/,/g, ".");
     const weight = parseFloat(processedValue);
-    return !isNaN(weight) ? parseFloat(weight.toFixed(2)) : 0;
+    return !isNaN(weight) ? weight.toFixed(2) : "0.00";
   };
 
   const processSystemWeight = (value) => {
