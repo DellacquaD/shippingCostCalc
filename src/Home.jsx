@@ -25,8 +25,16 @@ function Home({ styles }) {
     systemWidth: 0,
     systemHeight: 0,
     systemWeight: "",
-    userTarifa: null,
-    systemTarifa: null,
+    userTarifa: {
+      clave: null,
+      valor: null,
+      index: null
+    },
+    systemTarifa: {
+      clave: null,
+      valor: null,
+      index: null
+    },
   });
   const [allInputsComplete, setAllInputsComplete] = useState(false);
   const [jsonShippingCost, setJsonShippingCost] = useState({})
@@ -108,12 +116,11 @@ function Home({ styles }) {
     const usedWeightSystem = measurements.systemWeight > 2 ? systemPeso > parseFloat(processSystemWeight(measurements.systemWeight)) ? parseFloat(systemPeso) : parseFloat(processSystemWeight(measurements.systemWeight)) : measurements.site === "MLA" ? parseFloat(measurements.systemWeight) : parseFloat(systemPeso) > parseFloat(processSystemWeight(measurements.systemWeight)) ? parseFloat(systemPeso) : parseFloat(processSystemWeight(measurements.systemWeight));
     const userTarifa = findTarifa(usedWeightUser, measurements.site);
     const systemTarifa = findTarifa(usedWeightSystem, measurements.site);
-    
-    setMeasurements((prevMeasurements) => ({
-      ...prevMeasurements,
-      userTarifa,
-      systemTarifa,
-    }));
+    handleMeasurementChange("userTarifa", userTarifa);
+    handleMeasurementChange("systemTarifa", systemTarifa);
+
+
+  // Guardar userTarifa y systemTarifa en localStorage
 
     const allInputsComplete = 
     measurements.userLength > 0 &&
@@ -128,12 +135,18 @@ function Home({ styles }) {
     const message = "Medidas del usuario: " + measurements.userLength + "cm x " + measurements.userWidth + "cm x " + measurements.userHeight + "cm, " + measurements.userWeight + "kg. "  + "\n" + "Medidas del sistema: " + measurements.systemLength + "cm x " + measurements.systemWidth + "cm x" + measurements.systemHeight + "cm, " + measurements.systemWeight + "kg.";
     setMessage(allInputsComplete ? message : "")
   }, [
+    measurements.userLength,
+    measurements.userWidth,
+    measurements.userHeight,
     measurements.userWeight,
+    measurements.systemLength,
+    measurements.systemWidth,
+    measurements.systemHeight,
     measurements.systemWeight
   ]);
 
   useEffect(() => {
-    chrome.runtime.sendMessage({ action: "getLocalStorage", keys: ["site", "denominator", "userLength", "userWidth", "userHeight", "userWeight", "systemLength", "systemWidth", "systemHeight", "systemWeight"] }, (response) => {
+    chrome.runtime.sendMessage({ action: "getLocalStorage", keys: ["site", "denominator", "userLength", "userWidth", "userHeight", "userWeight", "systemLength", "systemWidth", "systemHeight", "systemWeight", "userTarifa", "systemTarifa"] }, (response) => {
       if (chrome.runtime.lastError) {
         console.error(chrome.runtime.lastError);
         return;
@@ -145,9 +158,8 @@ function Home({ styles }) {
         }));
       }
     });
-  }, []);
+  }, [measurements.site]);
 
-  
   const processUserWeight = (value) => {
     const processedValue = value.replace(/,/g, ".");
     const weight = parseFloat(processedValue);
@@ -243,16 +255,17 @@ function Home({ styles }) {
                 onChange={e => {
                   handleMeasurementChange("userLength", e.target.value);
                 }}
-                onMouseDown={() => handleMeasurementChange("userLength", "")}
+                onClick={() => handleMeasurementChange("userLength", "")}
                 onBlur={() => handleMeasurementChange("userLength", Math.ceil(measurements.userLength))}
+                step="1"
               />
             </td>
             <td>
               <input
                 type="number"
                 value={measurements.systemLength}
-                onChange={e => handleMeasurementChange("systemLength", e.target.value)}
                 onClick={() => handleMeasurementChange("systemLength", "")}
+                onChange={e => handleMeasurementChange("systemLength", e.target.value)}
                 onBlur={() => handleMeasurementChange("systemLength", Math.ceil(measurements.systemLength))}
                 step="1"
               />
